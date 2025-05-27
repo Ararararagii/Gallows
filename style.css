@@ -1,9 +1,14 @@
 body
 {
 	background-color: #000000;
-	font-size: 28px;
+	font-size: 24px;
 	color: lightgray;
+	font-family: "Roboto Mono", monospace;
+	font-weight: 600;
+	font-style: normal;
 }
+
+
 
 #container
 {
@@ -52,4 +57,13 @@ body
     background-color: #222222;
     color: white;
     border: 3px solid white;
+}
+
+.reset {
+    color: green;
+    cursor: pointer;
+    font-size: 24px;
+}
+.reset:hover {
+	color: white;
 }
