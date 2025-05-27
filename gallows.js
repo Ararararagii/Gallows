@@ -12,12 +12,12 @@ function display_answer() {
     document.getElementById("board").innerHTML = emptyAnswer;
 }
 
-window.onload = start;
+window.onload = () => { start(); };
 
 var letters = ["A", "Ą", "B", "C", "Ć", "D", "E", "Ę", "F", "G", "H", "I", "J", "K", "L", "Ł","M", "N", "Ń", "O", "Ó", "P", "Q", "R", "S", "Ś", "T", "U", "V", "W", "X", "Y", "Z", "Ź", "Ż"];
 
 
-function start() {
+async function start() {
     var div_content = "";
 
     for (const letter of letters) {
@@ -27,7 +27,8 @@ function start() {
 
     document.getElementById("alphabet").innerHTML = div_content;
 
-
+    answer = await generateAIAnswer();
+    emptyAnswer = answer.replace(/\S/g, "-");
     display_answer();
 }
 String.prototype.setCharAt = function (index, char) {
@@ -46,7 +47,7 @@ function check_letter(letter) {
     }
 
     if (hit) {
-        correct.play();
+       // correct.play();
         document.getElementById(letter).style.background = "#003300";
         document.getElementById(letter).style.color = "#00C000";
         document.getElementById(letter).style.border = "3px solid #00C000";
@@ -54,7 +55,7 @@ function check_letter(letter) {
 
         display_answer();
     } else {
-        incorrect.play();
+        //incorrect.play();
         document.getElementById(letter).style.background = "#330000";
         document.getElementById(letter).style.color = "#C00000";
         document.getElementById(letter).style.border = "3px solid #C00000";
@@ -73,4 +74,25 @@ function check_letter(letter) {
     if(mistakeCount >= 9) {
         document.getElementById("alphabet").innerHTML = "Przegrałeś! <br/> Odpowiedź to: <strong>" + answer + '</strong> <br/><br/><span class="reset" onclick="location.reload()">Jeszcze raz?</span>';
     }
+}
+
+async function generateAIAnswer() {
+    const GPT_KEY = "";
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': "application/json",
+            "Authorization": `Bearer ${GPT_KEY}`
+        },
+            body:JSON.stringify({
+            model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: "Podaj jedno ciekawe polskie słowo lub krótkie hasło do gry w wisielca." }],
+                max_tokens: 20,
+                temperature: 0.7
+            })
+    });
+
+    const data = await response.json();
+    return data.choices[0].message.content.trim().toUpperCase();
 }
